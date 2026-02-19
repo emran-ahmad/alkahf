@@ -97,15 +97,15 @@
 
 ## 📸 Screenshots
 
-> Add screenshots to an `assets/screenshots/` folder and update the table below.
+<div align="center">
 
-| Dashboard | Add Customer | Customer Details |
-|-----------|-------------|-----------------|
-| *(screenshot)* | *(screenshot)* | *(screenshot)* |
+| | | |
+|:---:|:---:|:---:|
+| ![](assets/screenshots/screenshot-01.png) | ![](assets/screenshots/screenshot-02.png) | ![](assets/screenshots/screenshot-03.png) |
+| ![](assets/screenshots/screenshot-04.png) | ![](assets/screenshots/screenshot-05.png) | ![](assets/screenshots/screenshot-06.png) |
+| ![](assets/screenshots/screenshot-07.png) | ![](assets/screenshots/screenshot-08.png) | ![](assets/screenshots/screenshot-09.png) |
 
-| Search & Filter | Order Tracking | Print View |
-|----------------|---------------|-----------|
-| *(screenshot)* | *(screenshot)* | *(screenshot)* |
+</div>
 
 ---
 
