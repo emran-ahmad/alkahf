@@ -126,4 +126,4 @@ Explain:
 
 ## Questions?
 
-Open a [GitHub Discussion](../../discussions) or email [info@systemdecode.com](mailto:info@systemdecode.com).
+Open a [GitHub Discussion](../../discussions) or email [mr_imran_ahmad@yahoo.com](mailto:mr_imran_ahmad@yahoo.com).

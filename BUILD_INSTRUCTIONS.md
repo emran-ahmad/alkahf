@@ -46,7 +46,7 @@ The build is configured in `package.json` under the `build` section:
 
 - **App ID**: `com.systemdecode.alkahf`
 - **Product Name**: alkahf
-- **Copyright**: Copyright © 2025 System Decode
+- **Copyright**: Copyright © 2025 Imran Ahmad
 - **Output Directory**: `dist/`
 
 ### Distribution
@@ -125,4 +125,4 @@ To release a new version:
 
 ---
 
-**Powered by System Decode** - Professional Software Solutions (alkahf)
+**Powered by Imran Ahmad** - Professional Software Solutions (alkahf)

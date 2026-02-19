@@ -12,7 +12,7 @@
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-Proprietary-red?style=flat-square)](LICENSE)
-[![Made by System Decode](https://img.shields.io/badge/made%20by-System%20Decode-FF6B35?style=flat-square)](https://systemdecode.com)
+[![Made by Imran Ahmad](https://img.shields.io/badge/made%20by-Imran%20Ahmad-FF6B35?style=flat-square)](mailto:mr_imran_ahmad@yahoo.com)
 
 [Features](#-features) · [Screenshots](#-screenshots) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [Architecture](#-architecture) · [Roadmap](#-roadmap) · [Support](#-support)
 
@@ -325,7 +325,7 @@ node check-db.js
 
 ## 📄 License
 
-This software is **proprietary**. All rights reserved by [System Decode](https://systemdecode.com).  
+This software is **proprietary**. All rights reserved by Imran Ahmad.  
 Unauthorized copying, distribution, or modification is strictly prohibited. See [LICENSE](LICENSE) for details.
 
 ---
@@ -334,15 +334,14 @@ Unauthorized copying, distribution, or modification is strictly prohibited. See 
 
 | Channel | Details |
 |---------|---------|
-| Email | [info@systemdecode.com](mailto:info@systemdecode.com) |
-| Website | [www.systemdecode.com](https://systemdecode.com) |
+| Email | [mr_imran_ahmad@yahoo.com](mailto:mr_imran_ahmad@yahoo.com) |
 | Issues | [GitHub Issues](../../issues) |
 
 ---
 
 <div align="center">
 
-**Built with precision by [System Decode](https://systemdecode.com)**
+**Built with precision by Imran Ahmad**
 
 *Empowering businesses through innovative technology solutions.*
 

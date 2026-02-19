@@ -23,8 +23,8 @@
     "sqlite"
   ],
   "author": {
-    "name": "System Decode",
-    "email": "info@systemdecode.com"
+    "name": "Imran Ahmad",
+    "email": "mr_imran_ahmad@yahoo.com"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -39,7 +39,7 @@
   "build": {
     "appId": "com.systemdecode.alkahf",
     "productName": "alkahf",
-    "copyright": "Copyright © 2025 System Decode",
+    "copyright": "Copyright © 2025 Imran Ahmad",
     "directories": {
       "output": "dist",
       "buildResources": "build"
