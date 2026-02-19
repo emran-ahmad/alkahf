@@ -1,0 +1,157 @@
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES - Design System
+   ========================================================================== */
+
+:root {
+  /* ========== Typography ========== */
+  --font-primary: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-urdu: 'Noto Nastaliq Urdu', 'Noto Nastaliq', serif;
+  --font-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
+  
+  /* Font Sizes - 8px modular scale */
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-base: 16px;
+  --font-lg: 18px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-3xl: 28px;
+  --font-4xl: 32px;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  
+  /* Font Weights */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* ========== Colors - Brand ========== */
+  --color-primary: #1e7e34;
+  --color-primary-dark: #156127;
+  --color-primary-light: #28a745;
+  --color-primary-lighter: #4caf50;
+  
+  /* ========== Colors - Neutrals ========== */
+  --color-black: #000000;
+  --color-gray-900: #1a1a1a;
+  --color-gray-800: #2d2d2d;
+  --color-gray-700: #4a4a4a;
+  --color-gray-600: #666666;
+  --color-gray-500: #888888;
+  --color-gray-400: #a8a8a8;
+  --color-gray-300: #d4d4d4;
+  --color-gray-200: #e5e5e5;
+  --color-gray-100: #f5f5f5;
+  --color-gray-50: #fafafa;
+  --color-white: #ffffff;
+  
+  /* ========== Colors - Semantic ========== */
+  --color-success: #28a745;
+  --color-success-light: #d4edda;
+  --color-error: #dc3545;
+  --color-error-light: #f8d7da;
+  --color-warning: #ffc107;
+  --color-warning-light: #fff3cd;
+  --color-info: #007bff;
+  --color-info-light: #d1ecf1;
+  
+  /* ========== Colors - Status Badges ========== */
+  --status-pending: #6c757d;
+  --status-in-progress: #ffc107;
+  --status-ready: #28a745;
+  --status-delivered: #007bff;
+  
+  /* ========== Backgrounds ========== */
+  --bg-primary: var(--color-white);
+  --bg-secondary: var(--color-gray-50);
+  --bg-tertiary: var(--color-gray-100);
+  --bg-card: var(--color-white);
+  --bg-overlay: rgba(0, 0, 0, 0.4);
+  
+  /* ========== Borders ========== */
+  --border-color: var(--color-gray-300);
+  --border-color-dark: var(--color-gray-400);
+  --border-color-light: var(--color-gray-200);
+  --border-width: 1px;
+  
+  /* ========== Text Colors ========== */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-700);
+  --text-muted: var(--color-gray-600);
+  --text-disabled: var(--color-gray-500);
+  --text-inverse: var(--color-white);
+  
+  /* ========== Spacing Scale (4px base) ========== */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  
+  /* ========== Border Radius ========== */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+  
+  /* ========== Shadows ========== */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+  
+  /* ========== Transitions ========== */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ========== Z-Index Scale ========== */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ==========================================================================
+   Prevent Text Selection - Application-wide
+   ========================================================================== */
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/* Allow text selection only in input fields, textareas, and contenteditable */
+input,
+textarea,
+[contenteditable="true"],
+.allow-select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  cursor: text;
+}

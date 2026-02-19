@@ -1,0 +1,431 @@
+@import url('./variables.css');
+
+/* ==========================================================================
+   ADD CUSTOMER - CLEAN & CONSISTENT STYLES
+   ========================================================================== */
+
+/* ========== BASE STYLES ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --app-font-size-base: 15px;
+    --app-font-size-small: 14px;
+    --app-font-size-title: 20px;
+    --app-font-size-card: 16px;
+}
+
+/* Performance optimizations */
+.container {
+    contain: layout style;
+}
+
+.measurements-section,
+.customer-info-section,
+.other-options-section,
+.pocket-section {
+    contain: layout style paint;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: var(--app-font-size-base);
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    padding: var(--space-4);
+    min-height: 100vh;
+}
+
+/* ========== CONTAINER ========== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+}
+
+/* ========== HEADER ========== */
+.customer-id {
+    background: linear-gradient(90deg, var(--color-black), var(--color-gray-800));
+    color: var(--color-white);
+    padding: var(--space-5);
+    text-align: center;
+    font-size: var(--app-font-size-title);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.back-button {
+    float: left;
+    padding: 10px 20px;
+    font-size: var(--app-font-size-small);
+    font-weight: 600;
+    color: var(--color-black);
+    background: var(--bg-card);
+    border: 1px solid var(--color-black);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    margin-right: var(--space-4);
+}
+
+.back-button:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+    padding: var(--space-6);
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    align-items: start;
+}
+
+.form-container > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.form-container .measurements-section {
+    flex: 1;
+}
+
+/* ========== SECTIONS ========== */
+.customer-info-section,
+.measurements-section,
+.other-options-section,
+.pocket-section,
+.notes-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.customer-info-section {
+    margin-top: var(--space-3);
+}
+
+.measurements-section,
+.pocket-section,
+.other-options-section {
+    margin-top: var(--space-3);
+    direction: rtl;
+}
+
+.notes-section {
+    margin-top: var(--space-6);
+}
+
+/* ========== SECTION TITLES ========== */
+.customer-info-title,
+.measurements-title,
+.other-options-title,
+.section-title {
+    font-size: var(--app-font-size-title);
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+    color: var(--text-primary);
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-2);
+    letter-spacing: -0.01em;
+}
+
+.card-title {
+    font-size: var(--app-font-size-title);
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+    color: var(--text-primary);
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-2);
+}
+
+/* ========== GRIDS ========== */
+.customer-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+}
+
+.measurements-grid,
+.other-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    text-align: right;
+}
+
+.other-options-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ========== FORM FIELDS ========== */
+.info-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.info-field-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ========== LABELS ========== */
+.info-label {
+    font-size: var(--app-font-size-small);
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.measurement-label {
+    font-size: var(--app-font-size-base);
+    font-weight: 500;
+    margin-bottom: var(--space-2);
+    display: block;
+    color: var(--text-primary);
+    direction: rtl;
+    text-align: right;
+}
+
+/* ========== INPUTS ========== */
+.info-input,
+.info-textarea,
+.measurement-input,
+.notes-area {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: var(--app-font-size-base);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+    letter-spacing: -0.01em;
+    direction: ltr;
+    text-align: center;
+}
+
+.info-textarea {
+    resize: vertical;
+    min-height: 60px;
+    line-height: 1.5;
+}
+
+.measurement-input {
+    text-align: center;
+    direction: ltr;
+}
+
+.notes-area {
+    min-height: 100px;
+}
+
+.info-input::placeholder,
+.info-textarea::placeholder,
+.measurement-input::placeholder,
+.notes-area::placeholder {
+    color: var(--text-placeholder);
+    opacity: 0.6;
+}
+
+.info-input:focus,
+.info-textarea:focus,
+.measurement-input:focus,
+.notes-area:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.1);
+}
+
+.info-input.error,
+.info-textarea.error,
+.measurement-input.error {
+    border-color: var(--color-error);
+}
+
+/* ========== BUTTONS ========== */
+.inline-pair-button,
+.pair-button {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid var(--color-black);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+    text-align: center;
+    font-size: var(--app-font-size-base);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    will-change: background, color;
+}
+
+.inline-pair-button.selected,
+.pair-button.selected {
+    background: var(--color-black);
+    color: var(--color-white);
+}
+
+.inline-pair-button:hover,
+.pair-button:hover {
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+.button-pairs {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-3);
+}
+
+.button-pair {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* ========== COLLAR & CUFF CARDS ========== */
+.collar-cuff-card {
+    margin-top: var(--space-3);
+    padding: var(--space-5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background-color: var(--bg-card);
+    direction: rtl;
+    box-shadow: var(--shadow-md);
+}
+
+/* ========== POCKET SECTION ========== */
+.pocket-inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== SAVE BUTTON ========== */
+.save-btn {
+    display: block;
+    margin: var(--space-6) auto var(--space-4);
+    padding: 12px 40px;
+    font-size: var(--app-font-size-base);
+    font-weight: 600;
+    color: var(--color-white);
+    background: var(--color-primary);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.save-btn:hover {
+    background: var(--color-primary-dark);
+}
+
+.save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ========== ERROR MESSAGES ========== */
+.error-message {
+    color: var(--color-error);
+    font-size: calc(var(--app-font-size-base) - 3px);
+    margin-top: 4px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+    .form-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .other-options-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: var(--space-2);
+    }
+    
+    .container {
+        border-radius: var(--radius-md);
+    }
+    
+    .customer-id {
+        padding: var(--space-4);
+        font-size: var(--font-lg);
+    }
+    
+    .main-content {
+        padding: var(--space-4);
+    }
+    
+    .customer-info-section,
+    .measurements-section,
+    .other-options-section,
+    .pocket-section,
+    .notes-section {
+        padding: var(--space-4);
+    }
+    
+    .customer-info-grid,
+    .measurements-grid,
+    .other-options-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+    
+    .form-container {
+        gap: var(--space-4);
+    }
+    
+    .back-button {
+        float: none;
+        display: block;
+        width: 100%;
+        margin: 0 0 var(--space-4) 0;
+    }
+    
+    .save-btn {
+        width: 100%;
+        margin: var(--space-5) 0;
+    }
+    
+    .button-pairs {
+        flex-direction: column;
+    }
+    
+    .button-pair {
+        width: 100%;
+    }
+}
+
+

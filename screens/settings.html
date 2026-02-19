@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>Settings - alkahf</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        body {
+            background: var(--bg-secondary);
+            padding: var(--space-6);
+            min-height: 100vh;
+            height: auto;
+            overflow-y: auto;
+        }
+        
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: var(--space-10);
+        }
+        
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .settings-title {
+            font-size: var(--font-2xl);
+            font-weight: var(--font-bold);
+            color: var(--text-primary);
+        }
+        
+        .settings-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-5);
+            box-shadow: var(--shadow-sm);
+            border: var(--border-width) solid var(--border-color);
+        }
+        
+        .section-header {
+            font-size: var(--font-lg);
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-5);
+            padding-bottom: var(--space-3);
+            border-bottom: var(--border-width) solid var(--border-color-light);
+        }
+        
+        .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-4);
+            margin-bottom: var(--space-3);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: var(--border-width) solid var(--border-color-light);
+        }
+        
+        .setting-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-weight: var(--font-medium);
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+            display: block;
+        }
+        
+        .setting-description {
+            font-size: var(--font-sm);
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+        }
+        
+        .setting-control {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            font-size: var(--font-lg);
+            font-weight: var(--font-bold);
+            cursor: pointer;
+            transition: all var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:hover:not(:disabled) {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .control-btn:disabled {
+            background: var(--color-gray-300);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .control-display {
+            min-width: 50px;
+            text-align: center;
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            font-size: var(--font-base);
+        }
+        
+        .preview-box {
+            background: var(--bg-primary);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-5);
+            margin-top: var(--space-4);
+        }
+        
+        .preview-title {
+            font-weight: var(--font-semibold);
+            color: var(--text-primary);
+            margin-bottom: var(--space-3);
+        }
+        
+        .preview-text {
+            color: var(--text-secondary);
+            line-height: var(--leading-relaxed);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: var(--space-3);
+            margin-top: var(--space-6);
+        }
+        
+        .toast {
+            position: fixed;
+            top: var(--space-5);
+            right: var(--space-5);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-md);
+            color: var(--color-white);
+            font-weight: var(--font-semibold);
+            z-index: 9999;
+            display: none;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .toast.success {
+            background: var(--color-success);
+        }
+        
+        .toast.error {
+            background: var(--color-error);
+        }
+        
+        .toast.show {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast" class="toast"></div>
+    
+    <div class="settings-container">
+        <div class="settings-header">
+            <button id="backBtn" class="btn btn-secondary">⬅ Back</button>
+            <h1 class="settings-title">Settings</h1>
+            <div style="width: 90px;"></div>
+        </div>
+
+        <!-- Font Size Settings -->
+        <div class="settings-card">
+            <h2 class="section-header">Font Size</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">App Font Size</span>
+                    <span class="setting-description">Controls the font size throughout the application</span>
+                </div>
+                <div class="setting-control">
+                    <div class="control-buttons">
+                        <button id="fontSizeDown" class="control-btn">−</button>
+                        <span id="fontSizeDisplay" class="control-display">14px</span>
+                        <button id="fontSizeUp" class="control-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-title">Font Preview</div>
+                <div id="fontPreview" class="preview-text">
+                    This is how the text will appear in your app. Customer names, phone numbers, and all other text will use this font size.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Print Layout Settings -->
+        <div class="settings-card">
+            <h2 class="section-header">Print Layout Settings</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Left Margin</span>
+                    <span class="setting-description">Adjust left margin to move content right (inches)</span>
+                </div>
+                <div class="setting-control">
+                    <div class="control-buttons">
+                        <button id="leftMarginDown" class="control-btn">−</button>
+                        <span id="leftMarginDisplay" class="control-display">1.4in</span>
+                        <button id="leftMarginUp" class="control-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Right Margin</span>
+                    <span class="setting-description">Adjust right margin to move content left (inches)</span>
+                </div>
+                <div class="setting-control">
+                    <div class="control-buttons">
+                        <button id="rightMarginDown" class="control-btn">−</button>
+                        <span id="rightMarginDisplay" class="control-display">1.4in</span>
+                        <button id="rightMarginUp" class="control-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-box">
+                <div class="preview-title">Print Preview Info</div>
+                <div class="preview-text">
+                    These settings will be applied when you print customer details. Press Ctrl+P on the customer details page to see a preview without wasting paper.
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Reset Print Layout</span>
+                    <span class="setting-description">Reset all print margins to default values</span>
+                </div>
+                <div class="setting-control">
+                    <button id="resetPrintBtn" class="btn btn-secondary">🔄 Reset to Default</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Database Management -->
+        <div class="settings-card">
+            <h2 class="section-header">Database Management</h2>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Import Database</span>
+                    <span class="setting-description">Restore customer data from a backup database file</span>
+                </div>
+                <div class="setting-control">
+                    <button id="importDbBtn" class="btn btn-primary">📥 Import Database</button>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Import NeDB Backup</span>
+                    <span class="setting-description">Convert and merge old NeDB line-based backup into current database</span>
+                </div>
+                <div class="setting-control">
+                    <button id="importNedbBtn" class="btn btn-secondary">🔄 Import NeDB Backup</button>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-info">
+                    <span class="setting-label">Export Database</span>
+                    <span class="setting-description">Create a backup of all customer data</span>
+                </div>
+                <div class="setting-control">
+                    <button id="exportDbBtn" class="btn btn-secondary">📤 Export Backup</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button id="saveBtn" class="btn btn-primary">Save Settings</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSettings = {
+            fontSize: 14,
+            printMarginLeft: 1.4,
+            printMarginRight: 1.4
+        };
+
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        const fontSizeUp = document.getElementById('fontSizeUp');
+        const fontSizeDown = document.getElementById('fontSizeDown');
+        const fontPreview = document.getElementById('fontPreview');
+        const saveBtn = document.getElementById('saveBtn');
+        const backBtn = document.getElementById('backBtn');
+        const toast = document.getElementById('toast');
+
+        async function loadSettings() {
+            try {
+                const fontSize = await window.api.getSetting('fontSize', '14');
+                currentSettings.fontSize = parseInt(fontSize);
+                
+                const printMarginLeft = await window.api.getSetting('printMarginLeft', '1.4');
+                currentSettings.printMarginLeft = parseFloat(printMarginLeft);
+                
+                const printMarginRight = await window.api.getSetting('printMarginRight', '1.4');
+                currentSettings.printMarginRight = parseFloat(printMarginRight);
+                
+                updateFontSizeDisplay();
+                updatePrintMarginDisplays();
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        function updateFontSizeDisplay() {
+            if (currentSettings.fontSize < 10) currentSettings.fontSize = 10;
+            if (currentSettings.fontSize > 22) currentSettings.fontSize = 22;
+
+            fontSizeDisplay.textContent = currentSettings.fontSize + 'px';
+            fontPreview.style.fontSize = currentSettings.fontSize + 'px';
+            
+            fontSizeDown.disabled = currentSettings.fontSize <= 10;
+            fontSizeUp.disabled = currentSettings.fontSize >= 22;
+        }
+
+        function updatePrintMarginDisplays() {
+            currentSettings.printMarginLeft = Math.max(0.1, Math.min(3.0, currentSettings.printMarginLeft));
+            currentSettings.printMarginRight = Math.max(0.1, Math.min(3.0, currentSettings.printMarginRight));
+
+            document.getElementById('leftMarginDisplay').textContent = currentSettings.printMarginLeft.toFixed(1) + 'in';
+            document.getElementById('rightMarginDisplay').textContent = currentSettings.printMarginRight.toFixed(1) + 'in';
+        }
+
+        fontSizeUp.addEventListener('click', () => {
+            if (currentSettings.fontSize < 22) {
+                currentSettings.fontSize++;
+                updateFontSizeDisplay();
+            }
+        });
+
+        fontSizeDown.addEventListener('click', () => {
+            if (currentSettings.fontSize > 10) {
+                currentSettings.fontSize--;
+                updateFontSizeDisplay();
+            }
+        });
+
+        document.getElementById('leftMarginUp').addEventListener('click', () => {
+            currentSettings.printMarginLeft = Math.min(3.0, currentSettings.printMarginLeft + 0.1);
+            updatePrintMarginDisplays();
+        });
+
+        document.getElementById('leftMarginDown').addEventListener('click', () => {
+            currentSettings.printMarginLeft = Math.max(0.1, currentSettings.printMarginLeft - 0.1);
+            updatePrintMarginDisplays();
+        });
+
+        document.getElementById('rightMarginUp').addEventListener('click', () => {
+            currentSettings.printMarginRight = Math.min(3.0, currentSettings.printMarginRight + 0.1);
+            updatePrintMarginDisplays();
+        });
+
+        document.getElementById('rightMarginDown').addEventListener('click', () => {
+            currentSettings.printMarginRight = Math.max(0.1, currentSettings.printMarginRight - 0.1);
+            updatePrintMarginDisplays();
+        });
+
+        document.getElementById('resetPrintBtn').addEventListener('click', () => {
+            const confirmed = confirm('Reset all print margins to default values?\n\nDefaults:\n• Left: 1.4 inches\n• Right: 1.4 inches');
+            if (confirmed) {
+                currentSettings.printMarginLeft = 1.4;
+                currentSettings.printMarginRight = 1.4;
+                updatePrintMarginDisplays();
+                showToast('Print layout reset to defaults. Click Save to apply.', 'success');
+            }
+        });
+
+        async function saveSettings() {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            
+            try {
+                await window.api.setSetting('fontSize', currentSettings.fontSize.toString());
+                await window.api.setSetting('printMarginLeft', currentSettings.printMarginLeft.toString());
+                await window.api.setSetting('printMarginRight', currentSettings.printMarginRight.toString());
+                
+                showToast('Settings saved successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Failed to save settings', 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Settings';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        document.getElementById('importDbBtn').addEventListener('click', async () => {
+            const confirmed = confirm(
+                '⚠️ IMPORTANT: Importing a database will REPLACE all current customer data.\n\n' +
+                'This action cannot be undone. Make sure you have a backup of your current data.\n\n' +
+                'Do you want to continue?'
+            );
+            
+            if (!confirmed) return;
+            
+            try {
+                const result = await window.api.restoreDatabase();
+                
+                if (result.success) {
+                    alert(`✅ Database imported successfully!\n\n${result.count} customers restored.\n\nThe app will reload to show the imported data.`);
+                    window.location.reload();
+                } else if (result.canceled) {
+                    return;
+                } else {
+                    alert('❌ Failed to import database: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Import error:', error);
+                alert('❌ An error occurred during import: ' + error.message);
+            }
+        });
+
+        document.getElementById('exportDbBtn').addEventListener('click', async () => {
+            try {
+                const result = await window.api.backupDatabase();
+                
+                if (result.success) {
+                    showToast('✅ Backup created successfully!', 'success');
+                    alert(`Database backup saved to:\n\n${result.path}\n\nYou can use this file to restore your data later.`);
+                } else if (result.canceled) {
+                    return;
+                } else {
+                    showToast('❌ Failed to create backup', 'error');
+                }
+            } catch (error) {
+                console.error('Export error:', error);
+                showToast('❌ Backup failed', 'error');
+            }
+        });
+
+        saveBtn.addEventListener('click', saveSettings);
+        
+        backBtn.addEventListener('click', () => {
+            window.api.navigate('home');
+        });
+
+        document.getElementById('importNedbBtn').addEventListener('click', async () => {
+            const proceed = confirm('This will read a legacy NeDB backup file (line-delimited JSON) and merge into the current database. Existing customers keep their non-empty fields. Continue?');
+            if (!proceed) return;
+            try {
+                const result = await window.api.importNeDB();
+                if (result.canceled) return;
+                if (result.success) {
+                    alert(`✅ NeDB import complete!\n\nImported: ${result.imported}\nUpdated: ${result.updated}\nSkipped: ${result.skipped}\nTotal Lines: ${result.totalLines}\n\nErrors: ${result.errors.length ? result.errors.length : 0}`);
+                    window.location.reload();
+                } else {
+                    alert('❌ Import failed: ' + (result.error || 'Unknown error'));
+                }
+            } catch (e) {
+                alert('❌ Import error: ' + e.message);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadSettings);
+    </script>
+</body>
+</html>
+

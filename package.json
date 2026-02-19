@@ -1,0 +1,113 @@
+{
+  "name": "alkahf",
+  "version": "1.1.0",
+  "description": "Desktop application for managing tailoring shop operations with customer measurements, order tracking, and automatic backups",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tailoring",
+    "management",
+    "electron",
+    "desktop-app",
+    "customer-management",
+    "order-tracking",
+    "offline",
+    "sqlite"
+  ],
+  "author": {
+    "name": "System Decode",
+    "email": "info@systemdecode.com"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emran-ahmad/alkahf_v2.git"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "build": {
+    "appId": "com.systemdecode.alkahf",
+    "productName": "alkahf",
+    "copyright": "Copyright © 2025 System Decode",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!**/*.md",
+      "!.git",
+      "!.gitignore",
+      "!dist",
+      "!database/*.db",
+      "!database/**/*.db",
+      "!database/backups/**",
+      "!database/exports/**",
+      "!node_modules/**/*/{CHANGELOG.md,README.md,readme.md,changelog.md}",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/*.d.ts",
+      "!node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
+    ],
+    "mac": {
+      "icon": "assets/icon.png",
+      "category": "public.app-category.business",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "alkahf",
+      "icon": "assets/icon.png"
+    },
+    "win": {
+      "icon": "assets/icon256.png",
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "verifyUpdateCodeSignature": false,
+      "signAndEditExecutable": false
+    },
+    "linux": {
+      "icon": "assets/icon.png",
+      "category": "Office",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^38.1.2",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}

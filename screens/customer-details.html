@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+  <title>کسٹمر پرنٹ شیٹ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #e8e8e8;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .print-container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border: 2px solid black;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      background-image: url('../assets/logo1.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 700px 500px;
+    }
+
+    .button-bar {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(249, 249, 249, 0.75);
+      border-bottom: 2px solid black;
+    }
+
+    button {
+      padding: 12px 30px;
+      background: #2d2d2d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      transition: background 0.15s;
+    }
+
+    button:hover {
+      background: #1e7e34;
+    }
+
+    /* Header Section */
+    .customer-id {
+      background: rgba(255, 255, 255, 0.75);
+      padding: 15px 25px;
+      text-align: center;
+      border-bottom: 2px solid black;
+      font-size: 15px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* Customer Info Section */
+    .section.customer-info-section {
+      background: rgba(255, 255, 255, 0.75);
+      padding: 15px 25px;
+      border-bottom: 2px solid black;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .customer-info-section ul {
+      list-style: none;
+      padding: 0;
+      direction: rtl;
+    }
+
+    .customer-info-section ul li {
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .customer-info-section strong {
+      font-weight: 600;
+    }
+
+    /* Measurements Section */
+    .section.measurements-grid {
+      padding: 20px 25px;
+      border-bottom: 2px solid black;
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .two-col-wrapper {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+      direction: rtl;
+    }
+
+    .col-left,
+    .col-right {
+      flex: 1;
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .inner-table {
+      list-style: none;
+      padding: 0;
+    }
+
+    .inner-table li {
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      text-align: right;
+      direction: rtl;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .en-num {
+      font-family: Arial, sans-serif;
+      direction: ltr;
+      display: inline-block;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
+    /* Notes Section */
+    .section.notes-section {
+      padding: 20px 30px;
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .notes-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 10px;
+      font-family: Arial, sans-serif;
+    }
+
+    .notes {
+      font-size: 15px;
+      color: #333;
+      font-family: Arial, sans-serif;
+      direction: ltr;
+      text-align: left;
+    }
+
+    /* Footer */
+    .footer-print-icon {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.75);
+      font-size: 28px;
+      color: #333;
+    }
+
+    .section {
+      margin: 0;
+    }
+
+    /* Watermark */
+    .print-container {
+      position: relative;
+    }
+
+    .print-container::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      height: 300px;
+      background-image: url('../assets/logo1.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.1;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .print-container > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Print Styles */
+    @media print {
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        background: white;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .button-bar {
+        display: none !important;
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 0.4in 1.8in 0.4in 1.8in;
+      }
+
+      .print-container {
+        box-shadow: none;
+        border: 1px solid #000;
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        overflow: visible;
+        position: relative;
+        background-image: url('../assets/logo1.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 700px 500px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .print-container::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background-image: url('../assets/logo1.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.1;
+        z-index: 0;
+        pointer-events: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .customer-id {
+        padding: 6px 12px;
+        font-size: 16px;
+      }
+
+      .section.customer-info-section {
+        padding: 8px 12px;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      .customer-info-section ul li {
+        margin-bottom: 3px;
+      }
+
+      .section.measurements-grid {
+        padding: 8px 12px;
+      }
+
+      .two-col-wrapper {
+        gap: 12px;
+        width: 100%;
+      }
+
+      .col-left,
+      .col-right {
+        font-size: 16px;
+        line-height: 1.4;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .inner-table li {
+        margin-bottom: 8px;
+        padding-bottom: 5px;
+        font-size: 16px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+      }
+
+      .section.notes-section {
+        padding: 8px 12px;
+      }
+
+      .notes-label {
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+
+      .notes {
+        font-size: 16px;
+      }
+
+      .footer-print-icon {
+        padding: 8px;
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Main Print Layout -->
+  <div class="print-container">
+    <!-- Toolbar -->
+    <div class="button-bar" style="position: relative; z-index: 10;">
+      <button id="printBtn">Print 🖨️</button>
+      <button id="editBtn">✎ Edit</button>
+      <button id="backBtn">Back ⬅</button>
+    </div>
+
+    <!-- Header: Customer ID and Print Date -->
+    <div class="customer-id">
+      <span id="printDate" class="en-num"></span>
+    </div>
+
+    <!-- Customer Info Section -->
+    <div class="section customer-info-section">
+      <ul>
+        <li><strong>• آئی ڈی :</strong> <span class="en-num" id="customerID"></span></li>
+        <li><strong>• نام :</strong> <span class="en-num" id="customerName"></span></li>
+        <li><strong>• فون :</strong> <span class="en-num" id="customerPhone"></span></li>
+        <li><strong>• پتہ :</strong> <span class="en-num" id="customerAddress"></span></li>
+      </ul>
+    </div>
+
+    <!-- Measurements Grid Section -->
+    <div class="section measurements-grid">
+      <ul class="two-col-wrapper">
+        <!-- Left Column -->
+        <li class="col-right">
+          <ul class="inner-table">
+            <li id="row1Right"></li>
+            <li id="row2Right"></li>
+            <li id="row3Right"></li>
+            <li id="row4Right"></li>
+            <li id="row5Right"></li>
+            <li id="row6Right"></li>
+            <li id="row7Right"></li>
+            <li id="row8Right"></li>
+            <li id="row9Right"></li>
+            <li id="row10Right"></li>
+            <li id="row11Right"></li>
+          </ul>
+        </li>
+         <!-- Right Column -->
+        <li class="col-left">
+          <ul class="inner-table">
+            <li id="row1Left"></li>
+            <li id="row2Left"></li>
+            <li id="row3Left"></li>
+            <li id="row4Left"></li>
+            <li id="row5Left"></li>
+            <li id="row6Left"></li>
+            <li id="row7Left"></li>
+            <li id="row8Left"></li>
+            <li id="row9Left"></li>
+            <li id="row10Left"></li>
+            <li id="row11Left"></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="section notes-section">
+      <div class="notes-label">نوٹس :</div>
+      <div class="notes en-num" id="customerNotes">Jub 9 tyar</div>
+    </div>
+
+    <!-- Footer with Print Icon -->
+    <div class="footer-print-icon">⎙</div>
+
+  </div>
+
+  <script>
+    if (new URLSearchParams(window.location.search).get('id') === 'preview') {
+      try { document.documentElement.classList.add('preview-mode'); } catch (e) { }
+    }
+
+    // Helper function to set values
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value || "-";
+    }
+
+    // Set print date timestamp and load customer data
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('DOMContentLoaded fired');
+      console.log('window.api exists:', typeof window.api !== 'undefined');
+      
+      // Load print margin settings
+      try {
+        const marginLeft = await window.api.getSetting('printMarginLeft', '1.4');
+        const marginRight = await window.api.getSetting('printMarginRight', '1.4');
+        
+        // Apply print margins dynamically (fixed 0.4in for top and bottom)
+        const style = document.createElement('style');
+        style.id = 'dynamic-print-margins';
+        style.textContent = `
+          @media print {
+            @page {
+              size: A4 portrait;
+              margin: 0.4in ${marginRight}in 0.4in ${marginLeft}in;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+        console.log(`Print margins applied: Left ${marginLeft}in, Right ${marginRight}in`);
+      } catch (error) {
+        console.error('Error loading print settings:', error);
+      }
+      
+      const printDateEl = document.getElementById('printDate');
+      if (printDateEl) {
+        const now = new Date();
+        const date = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        printDateEl.textContent = `Printed: ${date} ${time}`;
+      }
+
+      // Load customer data
+      try {
+        const id = new URLSearchParams(window.location.search).get("id");
+        console.log('Customer ID from URL:', id);
+        let customer = null;
+
+        if (typeof window.api !== 'undefined' && window.api && typeof window.api.getCustomers === 'function') {
+          console.log('Fetching customers from API...');
+          const customers = await window.api.getCustomers();
+          console.log('Customers loaded:', customers.length);
+          customer = customers.find((c) => String(c.uniqueID) === id);
+          console.log('Found customer:', customer);
+        } else {
+          console.error('window.api is not available!');
+          alert('Error: API not available. Please restart the application.');
+        }
+
+        if (customer) {
+          // Set customer info
+          setValue('customerID', customer.uniqueID);
+          setValue('customerName', customer.name);
+          setValue('customerPhone', customer.phone);
+          setValue('customerAddress', customer.address);
+          setValue('customerNotes', customer.notes);
+
+          // Populate receipt rows with database values
+          // Row 1: سامنے جیب (samne) | لمبائی (lambai)
+          let samneValue = 'No';
+          if (customer.samne) {
+            const yesNo = customer.samne.charAt(0).toUpperCase() + customer.samne.slice(1).toLowerCase();
+            if (customer.samneSize) {
+              samneValue = `(Size: ${customer.samneSize}) ${yesNo}`;
+            } else {
+              samneValue = yesNo;
+            }
+          }
+          document.getElementById('row1Left').innerHTML = `• سامنے جیب :        <span class="en-num">${samneValue}</span>`;
+          document.getElementById('row1Right').innerHTML = `• لمبائی :        <span class="en-num">${customer.lambai || '-'}</span>`;
+
+          // Row 2: سائیڈ جیب (dblSide) | بازو (bazo)
+          document.getElementById('row2Left').textContent = `• سائیڈ جیب :        ${customer.dblSide || '-'}`;
+          document.getElementById('row2Right').innerHTML = `• بازو :        <span class="en-num">${customer.bazo || '-'}</span>`;
+
+          // Row 3: کالر/بین (kalar_Ban) | شولڈر (shoulder + shoulderDown)
+          document.getElementById('row3Left').textContent = `• گلا :        ${customer.kalar_Ban || '-'}`;
+          const shoulderDisplay = customer.shoulder || '-';
+          const sdDisplay = customer.shoulderDown ? `(SD: ${customer.shoulderDown}) ` : '';
+          document.getElementById('row3Right').innerHTML = `• شولڈر :        <span class="en-num">${sdDisplay}${shoulderDisplay}</span>`;
+
+          // Row 4: کف (kaf) | کالر سائز (kalarSize)
+          document.getElementById('row4Left').textContent = `• کف :        ${customer.kaf || '-'}`;
+          document.getElementById('row4Right').innerHTML = `• کالر سائز :        <span class="en-num">${customer.kalarSize || '-'}</span>`;
+
+          // Row 5: پلیٹ (plat) | چھاتی (chati) موڑہ (mora)
+          document.getElementById('row5Left').textContent = `• پلیٹ :        ${customer.plat || '-'}`;
+          document.getElementById('row5Right').innerHTML = `• چھاتی :        <span class="en-num">${customer.chati || '-'}</span>        موڑہ :        <span class="en-num">${customer.mora || '-'}</span>`;
+
+          // Row 6: پٹی (pati) | گھیرہ (gira) کمر (kamar)
+          let patiText = '-';
+          if (customer.patiLength && customer.patiWidth) {
+            patiText = `${customer.patiLength}، ${customer.patiWidth}`;
+          } else if (customer.pati) {
+            patiText = customer.pati;
+          }
+          document.getElementById('row6Left').innerHTML = `• پٹی :        <span class="en-num">${patiText}</span>`;
+          document.getElementById('row6Right').innerHTML = `• گرہ :        <span class="en-num">${customer.gira || '-'}</span>        کمر :        <span class="en-num">${customer.kamar || '-'}</span>`;
+
+          // Row 7: سلائی (salai) | شلوار (shalwar) گھیرہ شلوار (girashalwar)
+          document.getElementById('row7Left').textContent = `• سلائی :        ${customer.salai || '-'}`;
+          document.getElementById('row7Right').innerHTML = `• شلوار :        <span class="en-num">${customer.shalwar || '-'}</span>        گرہ :        <span class="en-num">${customer.girashalwar || '-'}</span>`;
+
+          // Row 8: بٹن/چمک (chamakPatiBtn) | پانچہ (pancha)
+          document.getElementById('row8Left').textContent = `• چاک پٹی بٹن :        ${customer.chamakPatiBtn || '-'}`;
+          document.getElementById('row8Right').innerHTML = `• پنچہ :        <span class="en-num">${customer.pancha || '-'}</span>`;
+
+          // Row 9: دامن (daman) | کندہ (kanda)
+          document.getElementById('row9Left').textContent = `• دامن :        ${customer.daman || '-'}`;
+          document.getElementById('row9Right').innerHTML = `• کندہ :        <span class="en-num">${customer.kanda || '-'}</span>`;
+
+          // Row 10: شلوار پاکٹ (pakat) | ڈیزائن نمبر (designNo)
+          const pakatValue = customer.pakat ? customer.pakat.charAt(0).toUpperCase() + customer.pakat.slice(1).toLowerCase() : '-';
+          document.getElementById('row10Left').textContent = `• شلوار جیب :        ${pakatValue}`;
+          document.getElementById('row10Right').innerHTML = `• ڈیزائن نمبر :        <span class="en-num">${customer.designNo || ''}</span>`;
+
+          // Row 11: بٹن ڈیزائن (btnDesign) | کاریگر کا نام (karigarName)
+          document.getElementById('row11Left').textContent = `• بٹن ڈیزائن :        ${customer.btnDesign || '-'}`;
+          document.getElementById('row11Right').innerHTML = `• کاریگر :        <span class="en-num">${customer.karigarName || ''}</span>`;
+        } else {
+          console.error('Customer not found for ID:', id);
+          document.body.innerHTML = `
+            <div style="padding: 40px; text-align: center; font-family: Arial;">
+              <h2>Customer Not Found</h2>
+              <p>Could not find customer with ID: ${id}</p>
+              <button onclick="window.location.href='../main.html'" style="padding: 10px 20px; margin-top: 20px; cursor: pointer;">Go Back</button>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading customer data:', error);
+      }
+    });
+
+    // Auto-print on load if specified in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('autoprint') === 'true') {
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          window.print();
+        }, 500);
+      });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault();
+        window.print();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+        e.preventDefault();
+        const editBtn = document.getElementById('editBtn');
+        if (editBtn) editBtn.click();
+      }
+    });
+
+    // Button event listeners
+    document.getElementById("printBtn").addEventListener("click", () => {
+      window.print();
+    });
+
+    document.getElementById("editBtn").addEventListener("click", () => {
+      const customerID = document.getElementById("customerID").textContent;
+      window.location.href = `../screens/edit-customer.html?id=${customerID}`;
+    });
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      window.location.href = "../main.html";
+    });
+  </script>
+
+</body>
+
+</html>

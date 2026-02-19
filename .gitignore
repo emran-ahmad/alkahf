@@ -1,0 +1,96 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Electron build output
+/dist/
+/build/
+/out/
+/release/
+/app-release/
+/*.asar
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# VSCode and IDE stuff
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Backup and temp
+*.bak
+*.tmp
+*.swp
+
+# Database files (keep structure, ignore data)
+database/*.db
+database/*.db-shm
+database/*.db-wal
+database/backups/
+database/exports/
+
+# Electron cache
+.electron
+.electron-gyp
+.cache
+
+# macOS
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V8
+.Trashes
+ehthumbs.db
+
+# Windows
+$RECYCLE.BIN/
+*.lnk
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+
+# Optional: keep database folder structure but ignore data
+database/data.db
+database/data.db-shm
+database/data.db-wal
+
+# Coverage
+coverage/
+
+# Production builds
+dist/
+release/
+*.dmg
+*.exe
+*.AppImage
+
+# Logs
+*.log
+npm-debug.log*

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>Business Dashboard</title>
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="page-dashboard">
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="../assets/logo1.png" alt="alkahf logo">
+      </div>
+      <nav>
+        <a href="#" id="backHome"><span class="icon">🏠</span> Home</a>
+        <a href="#" id="settingsBtn"><span class="icon">⚙️</span> Settings</a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <h2 class="mb-5">Business Dashboard</h2>
+
+      <!-- Metric Cards (order tracking removed) -->
+      <div class="dashboard-cards">
+        <div class="card">
+          <div class="card-title">Total Customers</div>
+          <div class="card-value" id="totalCustomers">—</div>
+          <div class="card-description">All customers in your database</div>
+        </div>
+      </div>
+
+      <!-- Popular Designs -->
+      <div class="section" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+        <div>
+          <h3>Most Popular Designs</h3>
+          <ul id="popularDesigns" class="small-scroll" style="max-height:260px;overflow:auto;padding-left:18px;">
+            <li>Loading...</li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <style>
+    body.page-dashboard { align-items: flex-start; height:auto; min-height:100vh; }
+    body.page-dashboard .main { overflow-y:auto; max-height:95vh; }
+    
+  </style>
+
+  <script type="module" src="../renderer/dashboard.js"></script>
+</body>
+</html>

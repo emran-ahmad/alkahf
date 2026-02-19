@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+  <title>Customer Dashboard</title>
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="./assets/logo1.png" alt="alkahf logo">
+      </div>
+      <nav>
+        <a href="#" id="settingsBtn"><span class="icon">⚙️</span> Settings</a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input id="search" type="text" placeholder="Search by name, phone, or ID..." autocomplete="off">
+          <button id="clearSearch" class="clear-search-btn" style="display: none;">✕</button>
+          <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+      </div>
+
+      <!-- Customer List -->
+      <div id="customerList" class="customer-list"></div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button class="btn btn-primary">➕ Add New Customer</button>
+        <button id="exportCSVBtn" class="btn btn-secondary">📊 Export to Excel/CSV</button>
+      </div>
+      
+      <!-- Branding Footer -->
+      <div style="text-align: center; padding: 8px 0; margin-bottom: 5px; border-top: 1px solid #e0e0e0; color: #888; font-size: 12px;">
+        <span style="font-weight: 500;">alkahf © Powered by <span style="color: #219150; font-weight: 600;">System Decode</span></span>
+        <span style="margin: 0 8px;">•</span>
+        <span>Tailoring Management Suite</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="renderer/renderer.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const fontSize = await window.api.getSetting('fontSize', '14');
+        document.body.style.fontSize = fontSize + 'px';
+      } catch (error) {
+        
+      }
+
+      const searchInput = document.getElementById('search');
+      if (searchInput) {
+        setTimeout(() => searchInput.focus(), 100);
+      }
+
+      let selectedIndex = -1;
+      let keyboardMode = false;
+      let holdInterval = null;
+      let holdTimeout = null;
+      let isHolding = false;
+      
+      const style = document.createElement('style');
+      style.id = 'keyboard-nav-style';
+      document.head.appendChild(style);
+      
+      function navigateList(direction) {
+        const customerList = document.getElementById('customerList');
+        const customers = customerList ? Array.from(customerList.querySelectorAll('.customer-item')) : [];
+        
+        if (customers.length === 0) return;
+        
+        customers.forEach(item => {
+          item.style.background = '';
+          item.style.color = '';
+          item.style.borderRadius = '';
+          item.classList.remove('keyboard-selected');
+        });
+        
+        if (direction === 'down') {
+          selectedIndex = (selectedIndex + 1) % customers.length;
+        } else {
+          selectedIndex = selectedIndex <= 0 ? customers.length - 1 : selectedIndex - 1;
+        }
+        
+        if (selectedIndex >= 0 && selectedIndex < customers.length) {
+          const selected = customers[selectedIndex];
+          selected.style.background = 'var(--color-primary)';
+          selected.style.color = 'var(--color-white)';
+          selected.style.borderRadius = 'var(--radius-md)';
+          selected.classList.add('keyboard-selected');
+          selected.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          
+          if (!keyboardMode) {
+            keyboardMode = true;
+            style.textContent = '.customer-item:hover:not(.keyboard-selected) { background: transparent !important; color: inherit !important; border-radius: 0 !important; }';
+          }
+          
+          const direction = e.key === 'ArrowDown' ? 'down' : 'up';
+          
+          if (!isHolding) {
+            isHolding = true;
+            navigateList(direction);
+            
+            holdTimeout = setTimeout(() => {
+              holdInterval = setInterval(() => navigateList(direction), 80);
+            }, 400);
+          }
+        }
+        
+        if (e.key === 'Enter' && selectedIndex >= 0) {
+          e.preventDefault();
+          const customerList = document.getElementById('customerList');
+          const customers = customerList ? Array.from(customerList.querySelectorAll('.customer-item')) : [];
+          if (selectedIndex < customers.length) {
+            customers[selectedIndex].click();
+          }
+        }
+
+        if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
+          if (document.activeElement !== searchInput) {
+            searchInput.focus();
+          }
+        }
+        
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+          e.preventDefault();
+          window.api.navigate('customers');
+        }
+
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+          e.preventDefault();
+          const exportBtn = document.getElementById('exportCSVBtn');
+          if (exportBtn) exportBtn.click();
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          isHolding = false;
+          if (holdTimeout) clearTimeout(holdTimeout);
+          if (holdInterval) clearInterval(holdInterval);
+          holdTimeout = null;
+          holdInterval = null;
+        }
+      });
+      
+      document.addEventListener('mousemove', () => {
+        if (keyboardMode) {
+          keyboardMode = false;
+          style.textContent = '';
+          const customerList = document.getElementById('customerList');
+          const customers = customerList ? Array.from(customerList.querySelectorAll('.customer-item')) : [];
+          if (selectedIndex >= 0 && selectedIndex < customers.length) {
+            const prev = customers[selectedIndex];
+            prev.style.background = '';
+            prev.style.color = '';
+            prev.style.borderRadius = '';
+            prev.classList.remove('keyboard-selected');
+          }
+          selectedIndex = -1;
+        }
+      });
+
+      const settingsBtn = document.getElementById('settingsBtn');
+      if (settingsBtn) {
+        settingsBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.api.navigate('settings');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

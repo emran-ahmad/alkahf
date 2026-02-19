@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;">
+    <title>Edit Customer - alkahf</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/add-customer.css">
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .input-field.error,
+        .measurement-input.error,
+        .measurement-input.error {
+            border: 2px solid #dc3545;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 9999;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.success {
+            background: #28a745;
+        }
+
+        .toast.error {
+            background: #dc3545;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Inline button styles for measurements grid */
+        .kanda-measurement-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .kanda-measurement-group .measurement-label {
+            margin-bottom: 6px;
+        }
+
+        .inline-button-pair {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .inline-pair-button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+            font-size: 13px;
+            font-family: 'Noto Nastaliq Urdu', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inline-pair-button.selected {
+            background: #000;
+            color: #fff;
+        }
+
+        .inline-pair-button:hover {
+            background: #219150;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .pair-button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #000;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: center;
+            font-size: 13px;
+            font-family: 'Noto Nastaliq Urdu', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pair-button.selected {
+            background: #000;
+            color: #fff;
+        }
+
+        .pair-button:hover {
+            background: #219150;
+            color: #fff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toast" class="toast"></div>
+
+    <div class="container">
+        <button id="backBtn" class="back-button">⬅ Back</button>
+        <div class="customer-id">Edit Customer ID : <span id="custId"></span></div>
+
+        <div class="main-content">
+            <div class="customer-info-section">
+                <div class="customer-info-title">Customer Information</div>
+                <div class="customer-info-grid">
+                    <div class="info-field-group">
+                        <label for="customerName" class="info-label">Customer Name *</label>
+                        <input type="text" id="customerName" class="info-input" placeholder="Enter full name" required
+                            maxlength="100" dir="ltr">
+                        <div class="error-message" id="nameError">Name is required</div>
+                    </div>
+                    <div class="info-field-group">
+                        <label for="customerPhone" class="info-label">Phone Number *</label>
+                        <input type="tel" id="customerPhone" class="info-input" placeholder="03XX-XXXXXXX" required
+                            inputmode="numeric" pattern="[0-9]*" maxlength="20" dir="ltr" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <div class="error-message" id="phoneError">Phone is required</div>
+                        <div style="font-size: 0.85em; color: #666; margin-top: 4px;">Format: 03XX-XXXXXXX or 03XXXXXXXXX</div>
+                    </div>
+                    <div class="info-field-group full-width">
+                        <label for="customerAddress" class="info-label">Address *</label>
+                        <textarea id="customerAddress" class="info-textarea" placeholder="Enter complete address"
+                            required rows="2" maxlength="250" dir="ltr"></textarea>
+                        <div class="error-message" id="addressError">Address is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="measurements-section">
+                    <div class="measurements-title">Qameez Style Options</div>
+
+                    <div class="collar-cuff-card">
+                        <div class="card-title">گلا</div>
+                        <div class="button-pairs">
+                            <div class="button-pair" id="kalarTypeGroup">
+                                <div onclick="selectPair(this, 'kalarType')" class="pair-button" data-value="بین">بین
+                                </div>
+                                <div onclick="selectPair(this, 'kalarType')" class="pair-button" data-value="کالر">کالر
+                                </div>
+                            </div>
+                            <div class="button-pair" id="kalarStyleGroup">
+                                <div onclick="selectPair(this, 'kalarStyle')" class="pair-button" data-value="گول">گول
+                                </div>
+                                <div onclick="selectPair(this, 'kalarStyle')" class="pair-button" data-value="سیدھا">
+                                    سیدھا</div>
+                            </div>
+                            <div style="display: flex; gap: var(--space-2);">
+                                <input type="text" id="kalarLength" placeholder="لمبائ" class="measurement-input"
+                                    inputmode="numeric" pattern="[0-9]*" style="flex: 1;" dir="ltr">
+                                <input type="text" id="kalarWidth" placeholder="چوڑائی" class="measurement-input"
+                                    inputmode="numeric" pattern="[0-9]*" style="flex: 1;" dir="ltr">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collar-cuff-card">
+                        <div class="card-title">پلیٹ</div>
+                        <div class="button-pairs">
+                            <div class="button-pair" id="platGroup">
+                                <div onclick="selectPair(this, 'plat')" class="pair-button" data-value="پلیٹ بغیر">بغیر
+                                </div>
+                                <div onclick="selectPair(this, 'plat')" class="pair-button" data-value="ھلکا پلیٹ">ھلکا
+                                </div>
+                                <div onclick="selectPair(this, 'plat')" class="pair-button" data-value="فیکس پلیٹ">فیکس
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pocket-section">
+                        <div class="section-title">جیب</div>
+                        <div class="pocket-inputs" style="gap: var(--space-3);">
+                            <!-- Samne Jeeb Row -->
+                            <div
+                                style="display: flex; gap: var(--space-2); align-items: center; padding-bottom: var(--space-3); border-bottom: 1px solid var(--border-color);">
+                                <label class="measurement-label" style="margin: 0; min-width: 70px;">سامنے جیب</label>
+                                <div id="samneGroup" style="display: flex; gap: var(--space-2);">
+                                    <div class="inline-pair-button" data-value="yes" onclick="selectPair(this,'samneGroup')">
+                                        Yes</div>
+                                    <div class="inline-pair-button" data-value="no" onclick="selectPair(this,'samneGroup')">
+                                        No</div>
+                                </div>
+                                <input type="text" id="samneSize" class="measurement-input" dir="ltr" placeholder="Size"
+                                    inputmode="numeric" pattern="[0-9]*" style="flex: 1;">
+                            </div>
+
+                            <!-- Side Jeeb & Shalwar Jeeb Row -->
+                            <div style="display: flex; gap: var(--space-4); align-items: center;">
+                                <div style="display: flex; gap: var(--space-2); align-items: center; flex: 1;">
+                                    <label class="measurement-label" style="margin: 0; min-width: 70px;">سائیڈ
+                                        جیب</label>
+                                    <div id="sideJeebGroup" style="display: flex; gap: var(--space-2);">
+                                        <div class="inline-pair-button" data-value="1"
+                                            onclick="selectPair(this,'sideJeebGroup')">
+                                            1</div>
+                                        <div class="inline-pair-button" data-value="2"
+                                            onclick="selectPair(this,'sideJeebGroup')">
+                                            2</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: var(--space-2); align-items: center; flex: 1;">
+                                    <label class="measurement-label" style="margin: 0; min-width: 70px;">شلوار
+                                        جیب</label>
+                                    <div id="shalwarPakatGroup" style="display: flex; gap: var(--space-2);">
+                                        <div class="inline-pair-button" data-value="yes"
+                                            onclick="selectPair(this,'shalwarPakatGroup')">
+                                            Yes</div>
+                                        <div class="inline-pair-button" data-value="no"
+                                            onclick="selectPair(this,'shalwarPakatGroup')">
+                                            No</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collar-cuff-card">
+                        <div class="card-title">کف</div>
+                        <div class="button-pairs">
+                            <div class="button-pair" id="kafTypeGroup">
+                                <div onclick="selectPair(this, 'kafType')" class="pair-button" data-value="سنگل">سنگل
+                                </div>
+                                <div onclick="selectPair(this, 'kafType')" class="pair-button" data-value="ڈبل">ڈبل
+                                </div>
+                                <div onclick="selectPair(this, 'kafType')" class="pair-button" data-value="سادہ">سادہ
+                                </div>
+                            </div>
+                            <div class="button-pair" id="kafStyleGroup">
+                                <div onclick="selectPair(this, 'kafStyle')" class="pair-button" data-value="سیدھا">سیدھا
+                                </div>
+                                <div onclick="selectPair(this, 'kafStyle')" class="pair-button" data-value="گول">گول
+                                </div>
+                                <div onclick="selectPair(this, 'kafStyle')" class="pair-button" data-value="استین">استین
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: var(--space-2);">
+                                <input type="text" id="kafLength" placeholder="لمبائ" class="measurement-input"
+                                    inputmode="numeric" pattern="[0-9]*" style="flex: 1;" dir="ltr">
+                                <input type="text" id="kafWidth" placeholder="چوڑائی" class="measurement-input"
+                                    inputmode="numeric" pattern="[0-9]*" style="flex: 1;" dir="ltr">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collar-cuff-card">
+                        <div class="card-title">دامن</div>
+                        <div class="button-pairs">
+                            <div class="button-pair" id="damanGroup">
+                                <div onclick="selectPair(this, 'daman')" class="pair-button" data-value="گول دامن">گول
+                                </div>
+                                <div onclick="selectPair(this, 'daman')" class="pair-button" data-value="سیدھا دامن">
+                                    سیدھا </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="measurements-section">
+                        <div class="measurements-title">Qameez Measurements</div>
+                        <div class="measurements-grid">
+                            <div>
+                                <label class="measurement-label">لمبائ</label>
+                                <input type="text" id="lambai" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">بازو</label>
+                                <input type="text" id="bazo" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <div class="flex-1">
+                                    <label class="measurement-label">شولڈر</label>
+                                    <input type="text" id="shoulder" class="measurement-input" dir="ltr"
+                                        inputmode="numeric" pattern="[0-9]*">
+                                </div>
+                                <div class="max-w-xs">
+                                    <label class="measurement-label">شولڈر (SD)</label>
+                                    <input type="text" id="shoulderDown" class="measurement-input" dir="ltr"
+                                        placeholder="SD" inputmode="numeric" pattern="[0-9]*">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="measurement-label">چھاتی</label>
+                                <input type="text" id="chati" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">کالر سائز</label>
+                                <input type="text" id="kalarSize" class="measurement-input" dir="ltr"
+                                    inputmode="numeric" pattern="[0-9]*">
+                            </div>
+                            <div>
+                                <label class="measurement-label">موڑا</label>
+                                <input type="text" id="mora" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">کمر</label>
+                                <input type="text" id="kamar" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">کمر گرہ</label>
+                                <input type="text" id="gira" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">پٹی لمبائ</label>
+                                <input type="text" id="patiLength" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">پٹی چوڑائی</label>
+                                <input type="text" id="patiWidth" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="measurements-section" style="margin-top: var(--space-3);">
+                        <div class="measurements-title">Shalwar Measurements</div>
+                        <div class="measurements-grid">
+                            <div>
+                                <label class="measurement-label">شلوار</label>
+                                <input type="text" id="shalwar" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">شلوار گرہ</label>
+                                <input type="text" id="girashalwar" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">پنچہ</label>
+                                <input type="text" id="pancha" class="measurement-input" inputmode="numeric"
+                                    pattern="[0-9]*" dir="ltr">
+                            </div>
+                            <div class="kanda-measurement-group">
+                                <label class="measurement-label">کندہ</label>
+                                <div class="inline-button-pair" id="kandaGroup">
+                                    <div onclick="selectPair(this, 'kanda')" class="inline-pair-button"
+                                        data-value="بغیر کندہ 2">بغیر کندہ 2</div>
+                                    <div onclick="selectPair(this, 'kanda')" class="inline-pair-button"
+                                        data-value="شلوار کندہ 6">شلوار کندہ 6</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="other-options-section" style="margin-top: var(--space-3);">
+                        <div class="other-options-title">Other Options</div>
+                        <div class="other-options-grid">
+                            <div>
+                                <label class="measurement-label">بٹن ڈیزائن</label>
+                                <input type="text" id="btnDesign" class="measurement-input" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">چاک پٹی بٹن</label>
+                                <input type="text" id="chamakPatiBtn" class="measurement-input" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">سلائی</label>
+                                <input type="text" id="salai" class="measurement-input" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">ڈیزائن نمبر</label>
+                                <input type="text" id="designNo" class="measurement-input" dir="ltr">
+                            </div>
+                            <div>
+                                <label class="measurement-label">کاریگر</label>
+                                <input type="text" id="karigarName" class="measurement-input" dir="ltr">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="notes-section">
+            <div class="other-options-title">Additional Notes</div>
+            <textarea id="notes" class="notes-area" placeholder="Add any additional notes here..." dir="ltr"></textarea>
+        </div>
+
+        <button id="updateBtn" class="save-btn">💾 Update Customer</button>
+    </div>
+
+    <script>
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+S or Cmd+S - Update
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                const updateBtn = document.getElementById('updateBtn');
+                if (updateBtn && !updateBtn.disabled) updateBtn.click();
+            }
+            
+            // Enter key - move to next input
+            if (e.key === 'Enter' && !e.shiftKey) {
+                const target = e.target;
+                
+                // Don't interfere with buttons
+                if (target.tagName === 'BUTTON') {
+                    return;
+                }
+                
+                // For both inputs and textareas, move to next field on Enter
+                if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+                    e.preventDefault();
+                    
+                    // Get all focusable elements
+                    const focusableElements = Array.from(document.querySelectorAll(
+                        'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), button:not([disabled]), select:not([disabled])'
+                    ));
+                    
+                    const currentIndex = focusableElements.indexOf(target);
+                    const nextElement = focusableElements[currentIndex + 1];
+                    
+                    if (nextElement) {
+                        nextElement.focus();
+                        if (nextElement.tagName === 'INPUT' || nextElement.tagName === 'TEXTAREA') {
+                            nextElement.select();
+                        }
+                    }
+                }
+            }
+        });
+
+        function selectPair(elem, groupName) {
+            const parent = elem.parentNode;
+            for (let i = 0; i < parent.children.length; i++) {
+                parent.children[i].classList.remove('selected');
+            }
+            elem.classList.add('selected');
+        }
+
+        function selectButtonByValue(groupId, value) {
+            if (!value) return;
+            const group = document.getElementById(groupId);
+            if (group) {
+                const buttons = group.querySelectorAll('.pair-button, .inline-pair-button');
+                buttons.forEach(button => {
+                    if (button.getAttribute('data-value') === value) {
+                        button.classList.add('selected');
+                    }
+                });
+            }
+        }
+
+        function parseKalarBan(kalarBan) {
+            if (!kalarBan) return { type: '', style: '', length: '', width: '' };
+            // Split by Arabic comma and filter out empty parts
+            const parts = kalarBan.split('،').map(part => part.trim()).filter(p => p !== '');
+            return {
+                type: parts[0] || '',
+                style: parts[1] || '',
+                length: parts[2] || '',
+                width: parts[3] || ''
+            };
+        }
+
+        // FIXED: Improved Kaf parsing
+        function parseKaf(kaf) {
+            if (!kaf) return { type: '', style: '', length: '', width: '' };
+
+            let type = '', style = '', length = '', width = '';
+
+            // Detect type
+            if (kaf.includes('سنگل کف') || kaf.includes('سنگل')) type = 'سنگل';
+            else if (kaf.includes('ڈبل کف') || kaf.includes('ڈبل')) type = 'ڈبل';
+            else if (kaf.includes('سادہ')) type = 'سادہ';
+
+            // Detect style
+            if (kaf.includes('سیدھا')) style = 'سیدھا';
+            else if (kaf.includes('گول')) style = 'گول';
+            else if (kaf.includes('استین')) style = 'استین';
+
+            // Split by commas and extract dimensions
+            const parts = kaf.split(/[،,]/).map(p => p.trim()).filter(Boolean);
+
+            // Get last 2 parts as length/width if they exist
+            if (parts.length >= 4) {
+                length = parts[parts.length - 2];
+                width = parts[parts.length - 1];
+            } else if (parts.length >= 3) {
+                length = parts[parts.length - 1];
+            }
+
+            return { type, style, length, width };
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function getSelectedValue(groupId) {
+            const group = document.getElementById(groupId);
+            if (!group) return '';
+            const selected = group.querySelector('.pair-button.selected, .inline-pair-button.selected');
+            return selected ? selected.getAttribute('data-value') : '';
+        }
+
+        async function loadCustomer() {
+            const params = new URLSearchParams(window.location.search);
+            const customerId = params.get("id");
+
+            if (!customerId) return;
+
+            try {
+                const customers = await window.api.getCustomers();
+                const customer = customers.find(c => String(c.uniqueID) === customerId);
+
+                if (!customer) {
+                    showToast("Customer not found!", "error");
+                    return;
+                }
+
+                // Clear all selections first
+                document.querySelectorAll('.pair-button.selected, .inline-pair-button.selected').forEach(button => {
+                    button.classList.remove('selected');
+                });
+
+                // Basic info
+                document.getElementById('customerName').value = customer.name || "";
+                document.getElementById('customerPhone').value = customer.phone || "";
+                document.getElementById('customerAddress').value = customer.address || "";
+
+                // Measurements
+                document.getElementById('lambai').value = customer.lambai || "";
+                document.getElementById('bazo').value = customer.bazo || "";
+                document.getElementById('shoulder').value = customer.shoulder || "";
+                document.getElementById('shoulderDown').value = customer.shoulderDown || "";
+                document.getElementById('kalarSize').value = customer.kalarSize || "";
+                document.getElementById('chati').value = customer.chati || "";
+                document.getElementById('mora').value = customer.mora || "";
+                document.getElementById('kamar').value = customer.kamar || "";
+                document.getElementById('gira').value = customer.gira || "";
+                document.getElementById('shalwar').value = customer.shalwar || "";
+                document.getElementById('girashalwar').value = customer.girashalwar || "";
+                document.getElementById('pancha').value = customer.pancha || "";
+
+                // Patti fields
+                if (customer.pati) {
+                    const patiParts = customer.pati.split('،');
+                    document.getElementById('patiLength').value = patiParts[0]?.trim() || "";
+                    document.getElementById('patiWidth').value = patiParts[1]?.trim() || "";
+                }
+
+                // Button groups
+                if (customer.kanda) selectButtonByValue('kandaGroup', customer.kanda);
+                if (customer.daman) selectButtonByValue('damanGroup', customer.daman);
+                if (customer.plat) selectButtonByValue('platGroup', customer.plat);
+
+                // Samne jeeb - load button selection and size
+                if (customer.samne) selectButtonByValue('samneGroup', customer.samne);
+                document.getElementById('samneSize').value = customer.samneSize || "";
+
+                // Side Jeeb and Shalwar Jeeb
+                if (customer.dblSide) selectButtonByValue('sideJeebGroup', customer.dblSide);
+                if (customer.pakat) selectButtonByValue('shalwarPakatGroup', customer.pakat);
+
+                // Kalar
+                if (customer.kalar_Ban) {
+                    const kalar = parseKalarBan(customer.kalar_Ban);
+                    if (kalar.type) selectButtonByValue('kalarTypeGroup', kalar.type);
+                    if (kalar.style) selectButtonByValue('kalarStyleGroup', kalar.style);
+                    document.getElementById('kalarLength').value = kalar.length || "";
+                    document.getElementById('kalarWidth').value = kalar.width || "";
+                }
+
+                // Kaf
+                if (customer.kaf) {
+                    const kaf = parseKaf(customer.kaf);
+                    if (kaf.type) selectButtonByValue('kafTypeGroup', kaf.type);
+                    if (kaf.style) selectButtonByValue('kafStyleGroup', kaf.style);
+                    document.getElementById('kafLength').value = kaf.length || "";
+                    document.getElementById('kafWidth').value = kaf.width || "";
+                }
+
+                // Other options
+                document.getElementById('btnDesign').value = customer.btnDesign || "";
+                document.getElementById('chamakPatiBtn').value = customer.chamakPatiBtn || "";
+                document.getElementById('salai').value = customer.salai || "";
+                document.getElementById('designNo').value = customer.designNo || "";
+                document.getElementById('karigarName').value = customer.karigarName || "";
+
+                // Notes
+                document.getElementById('notes').value = customer.notes || "";
+                
+            } catch (err) {
+                console.error("Failed to load customer:", err);
+                showToast("Failed to load customer data", "error");
+            }
+        }
+
+        // Validate phone number
+        function validatePhone(phone) {
+            if (!phone) return { valid: false, message: 'Phone number is required' };
+            return { valid: true };
+        }
+
+        // Internal update function
+        async function performUpdate(printAfter = false) {
+            const params = new URLSearchParams(window.location.search);
+            const customerId = params.get("id");
+
+            const updateBtn = document.getElementById('updateBtn');
+            const updatePrintBtn = document.getElementById('updatePrintBtn');
+            
+            if (updateBtn) updateBtn.disabled = true;
+            if (updatePrintBtn) updatePrintBtn.disabled = true;
+            
+            const originalText = updateBtn ? updateBtn.textContent : 'Update Customer';
+            if (updateBtn) updateBtn.textContent = 'Updating...';
+            if (updatePrintBtn) updatePrintBtn.textContent = 'Updating...';
+
+            try {
+                const name = document.getElementById('customerName').value.trim();
+                const phone = document.getElementById('customerPhone').value.trim();
+                const address = document.getElementById('customerAddress').value.trim();
+                
+                // Validate required fields
+                if (!name || !phone || !address) {
+                    showToast('Please fill in all required fields (Name, Phone, Address)', 'error');
+                    if (updateBtn) { updateBtn.disabled = false; updateBtn.textContent = originalText; }
+                    if (updatePrintBtn) { updatePrintBtn.disabled = false; updatePrintBtn.textContent = '💾🖨️ Update & Print'; }
+                    return;
+                }
+                
+                // Validate phone format
+                const phoneValidation = validatePhone(phone);
+                if (!phoneValidation.valid) {
+                    showToast(phoneValidation.message, 'error');
+                    if (updateBtn) { updateBtn.disabled = false; updateBtn.textContent = originalText; }
+                    if (updatePrintBtn) { updatePrintBtn.disabled = false; updatePrintBtn.textContent = '💾🖨️ Update & Print'; }
+                    return;
+                }
+                
+                const lambai = document.getElementById('lambai').value.trim();
+                const bazo = document.getElementById('bazo').value.trim();
+                const shoulder = document.getElementById('shoulder').value.trim();
+                const shoulderDown = document.getElementById('shoulderDown').value.trim();
+                const kalarSize = document.getElementById('kalarSize').value.trim();
+                const chati = document.getElementById('chati').value.trim();
+                const mora = document.getElementById('mora').value.trim();
+                const kamar = document.getElementById('kamar').value.trim();
+                const gira = document.getElementById('gira').value.trim();
+                const shalwar = document.getElementById('shalwar').value.trim();
+                const girashalwar = document.getElementById('girashalwar').value.trim();
+                const pancha = document.getElementById('pancha').value.trim();
+                
+                const patiLength = document.getElementById('patiLength').value.trim();
+                const patiWidth = document.getElementById('patiWidth').value.trim();
+                const pati = (patiLength || patiWidth) ? `${patiLength}،${patiWidth}` : '';
+                
+                const kanda = getSelectedValue('kandaGroup');
+                const daman = getSelectedValue('damanGroup');
+                const plat = getSelectedValue('platGroup');
+                
+                const samne = getSelectedValue('samneGroup');
+                const samneSize = document.getElementById('samneSize').value.trim();
+                const dblSide = getSelectedValue('sideJeebGroup');
+                const pakat = getSelectedValue('shalwarPakatGroup');
+                
+                // Build kalar_Ban
+                const kalarType = getSelectedValue('kalarTypeGroup');
+                const kalarStyle = getSelectedValue('kalarStyleGroup');
+                const kalarLength = document.getElementById('kalarLength').value.trim();
+                const kalarWidth = document.getElementById('kalarWidth').value.trim();
+                
+                let kalar_Ban = '';
+                if (kalarType || kalarStyle || kalarLength || kalarWidth) {
+                    kalar_Ban = `${kalarType || ''}، ${kalarStyle || ''}، ${kalarLength || ''}، ${kalarWidth || ''}`;
+                    kalar_Ban = kalar_Ban.replace(/،،+/g, '،').replace(/^،|،$/g, '').trim();
+                }
+                
+                // Build kaf
+                const kafType = getSelectedValue('kafTypeGroup');
+                const kafStyle = getSelectedValue('kafStyleGroup');
+                const kafLength = document.getElementById('kafLength').value.trim();
+                const kafWidth = document.getElementById('kafWidth').value.trim();
+                
+                let kaf = '';
+                if (kafType || kafStyle || kafLength || kafWidth) {
+                    const kafPart = kafType ? `${kafType} کف` : '';
+                    const stylePart = kafStyle || '';
+                    const lengthPart = kafLength || '';
+                    const widthPart = kafWidth || '';
+                    
+                    kaf = [kafPart, stylePart, lengthPart, widthPart]
+                        .filter(part => part !== '')
+                        .join('، ');
+                }
+                
+                const btnDesign = document.getElementById('btnDesign').value.trim();
+                const chamakPatiBtn = document.getElementById('chamakPatiBtn').value.trim();
+                const salai = document.getElementById('salai').value.trim();
+                const designNo = document.getElementById('designNo').value.trim();
+                const karigarName = document.getElementById('karigarName').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                
+                const updated = {
+                    uniqueID: customerId,
+                    name,
+                    phone,
+                    address,
+                    samne: samne || '',
+                    samneSize: samneSize || '',
+                    dblSide: dblSide || '',
+                    pakat: pakat || '',
+                    pati: pati || '',
+                    lambai: lambai || '',
+                    bazo: bazo || '',
+                    shoulder: shoulder || '',
+                    shoulderDown: shoulderDown || '',
+                    kalarSize: kalarSize || '',
+                    chati: chati || '',
+                    mora: mora || '',
+                    kamar: kamar || '',
+                    gira: gira || '',
+                    shalwar: shalwar || '',
+                    girashalwar: girashalwar || '',
+                    pancha: pancha || '',
+                    daman: daman || '',
+                    kanda: kanda || '',
+                    plat: plat || '',
+                    kalar_Ban: kalar_Ban || '',
+                    kaf: kaf || '',
+                    btnDesign: btnDesign || '',
+                    chamakPatiBtn: chamakPatiBtn || '',
+                    salai: salai || '',
+                    designNo: designNo || '',
+                    karigarName: karigarName || '',
+                    size: '',
+                    notes: notes || ''
+                };
+
+                if (window.api.updateCustomer) {
+                    await window.api.updateCustomer(updated);
+                } else {
+                    await window.api.saveCustomer(updated);
+                }
+                
+                showToast("Customer updated successfully!", "success");
+                
+                setTimeout(() => {
+                    if (printAfter) {
+                        window.location.href = `customer-details.html?id=${customerId}&autoprint=true`;
+                    } else {
+                        window.location.href = `customer-details.html?id=${customerId}`;
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Update error:', error);
+                showToast("Failed to update customer. Please try again.", "error");
+                if (updateBtn) {
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = originalText;
+                }
+                if (updatePrintBtn) {
+                    updatePrintBtn.disabled = false;
+                    updatePrintBtn.textContent = '💾🖨️ Update & Print';
+                }
+            }
+        }
+
+        // Button handlers
+        document.getElementById("updateBtn").addEventListener("click", async () => {
+            await performUpdate(false);
+        });
+
+        document.getElementById("backBtn").addEventListener("click", () => {
+            window.location.href = "../main.html";
+        });
+
+        const params = new URLSearchParams(window.location.search);
+        const customerId = params.get("id");
+        if (customerId) {
+            document.getElementById("custId").textContent = customerId;
+        }
+
+        loadCustomer();
+
+        // Initialize page
+        function initializePage() {
+            // Enable all form inputs
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                el.disabled = false;
+                el.removeAttribute('disabled');
+            });
+            
+            // Auto-focus on name field after data loads
+            setTimeout(() => {
+                const nameField = document.getElementById('customerName');
+                if (nameField && nameField.value) {
+                    nameField.focus();
+                }
+            }, 500);
+        }
+        
+        // Run on page show
+        window.addEventListener('pageshow', initializePage);
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const fontSize = await window.api.getSetting('fontSize', '14');
+                document.body.style.fontSize = fontSize + 'px';
+            } catch (error) {
+                console.error('Error loading font size setting:', error);
+            }
+        });
+    </script>
+</body>
+
+</html>
